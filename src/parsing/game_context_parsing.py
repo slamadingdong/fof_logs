@@ -23,7 +23,7 @@ class GameContextParser(object):
         self._away_team: str
         self._init_teams(participation_tbl)
 
-    def parse_play(self, summ_text: str, play_call: Any) -> GameContext:
+    def parse_context(self, summ_text: str, play_call: Any) -> GameContext:
         """Parses the summary text and play call table into a GameContext."""
         home = self._which_team_offense(
             play_call) == self._home_team

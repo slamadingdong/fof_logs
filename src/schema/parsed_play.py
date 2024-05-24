@@ -10,6 +10,6 @@ from player_names import PlayerNames
 @dataclass(frozen=True)
 class ParsedPlay:
     call: PlayCall
-    summary: PlayOutcome
+    outcome: PlayOutcome
     names: PlayerNames
     context: GameContext

@@ -30,7 +30,7 @@ _RUN_DIRECTION_MAP = {
 }
 
 
-def parse_play_call(play_call: Any, summary_text: str) -> Optional[PlayCall]:
+def parse_play_call(summary_text: str, play_call: Any) -> Optional[PlayCall]:
     """Parse the play call from the table and summary.
 
     :param: play_call: The beautifulsoup table with the playcall.
