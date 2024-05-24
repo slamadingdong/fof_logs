@@ -2,7 +2,7 @@
 import glob
 import logging
 import re
-from typing import Iterator, Tuple, Any
+from typing import List, Tuple, Any
 
 # noinspection PyUnresolvedReferences
 import cchardet
@@ -14,17 +14,14 @@ logger = logging.getLogger(__name__)
 _YEAR_REGEX = r'(?<=log)\d{4}'
 
 
-def game_log_it(log_dir: str) -> Iterator[Tuple[Any, Any, int]]:
-    """Iterator through all game logs in the given directory.
+def game_log_paths(log_dir: str) -> List[str]:
+    """Get all game log paths in the given directory.
 
-    :param: log_dir: The directory path containing the game logs.
-    :returns: An iterator that provides the beautiful soup of the play by
-    play data, the participation table, and the season year of the game log."""
+    :param: log_dir: The directory path containing the game logs."""
     game_log_path_regex = f"{log_dir}\\log*.html"
     all_paths = glob.glob(pathname=game_log_path_regex)
     logger.info(f"Found {len(all_paths)} game logs.")
-    for path in all_paths:
-        yield get_log_participation_year(path)
+    return all_paths
 
 
 def get_log_participation_year(game_log_path: str) -> Tuple[Any, Any, int]:

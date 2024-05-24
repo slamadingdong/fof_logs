@@ -1,5 +1,5 @@
 """Responsible for fully parsing the play by play."""
-from typing import Any, Sequence, Tuple
+from typing import Any, List, Tuple
 
 from bs4 import element
 
@@ -10,7 +10,7 @@ from play_summary_parsing import parse_play_outcome
 from src.schema.parsed_play import ParsedPlay
 
 
-def parse_full_game(raw_log: Any, participation: Any) -> Sequence[ParsedPlay]:
+def parse_full_game(raw_log: Any, participation: Any) -> List[ParsedPlay]:
     """Given the raw play-by-play soup object, parse every play.
 
     :param: raw_log: The beautifulsoup of the play by play for a game.
@@ -62,7 +62,7 @@ def _get_play_call(log):
         return None
 
 
-def _summaries_and_calls(game_log) -> Sequence[Tuple[str, Any]]:
+def _summaries_and_calls(game_log) -> List[Tuple[str, Any]]:
     out = []
     for log in game_log:
         if log.text == '\n':
