@@ -31,13 +31,11 @@ _PENALTY_YARDAGE_MAP = {
 }
 
 
-def parse_play_outcome(summary_text: str, play_call: Any) -> Tuple[
-    PlayOutcome, DownDistance]:
+def parse_play_outcome(summary_text: str, play_call: Any) -> PlayOutcome:
     """Parses the text of the play summary into a PlayOutcome and down/distance.
     """
 
     if _should_parse(summary_text):
-        dd = _parse_down_distance(summary_text)
         # TODO: Parse penalties.
         familiar = ' familiar ' in summary_text
         if _is_pass_play(summary_text):
@@ -45,7 +43,7 @@ def parse_play_outcome(summary_text: str, play_call: Any) -> Tuple[
         else:
             outcome = _parse_running_outcome(summary_text)
         play_outcome = PlayOutcome(outcome=outcome, familiar=familiar)
-        return play_outcome, dd
+        return play_outcome
 
 
 def _parse_running_outcome(summary_text: str) -> RunningOutcome:
@@ -143,18 +141,6 @@ def _is_pass_play(summary_text: str) -> bool:
             re.search(HURRIED_REGEX, summary_text)):
         return True
     return False
-
-
-def _parse_down_distance(summary_text: str) -> DownDistance:
-    maybe_down_distance = re.search(DOWN_DISTANCE_REGEX, summary_text)
-    if maybe_down_distance:
-        down = int(maybe_down_distance[0][0])
-        distance = int(maybe_down_distance[0][2:4])
-        return DownDistance(down=down, distance=distance)
-    if 'two-point' in summary_text:
-        return DownDistance(down=4, distance=2)
-    raise AssertionError("The down and distance could not be parsed: " +
-                         summary_text)
 
 
 def _is_two_pt_conversion(summary_text):
