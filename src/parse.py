@@ -5,9 +5,14 @@ import itertools
 import logging
 import os
 import time
+# Ignore annoying pandas warnings
+import warnings
 from dataclasses import asdict
 from multiprocessing import Pool, cpu_count
+from pathlib import Path
 from typing import List, Dict
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import pandas as pd
 
@@ -16,9 +21,12 @@ from dtypes import cast_dtypes
 from loader import get_log_participation_year, game_log_paths
 from parsing.game_log_parsing import parse_full_game, ParsedPlay
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 _NUM_PROCESSES = cpu_count()
+
+logger.info(f"Using {_NUM_PROCESSES} processes to parse logs.")
 
 
 def parse_one_log(path: str, idx: int) -> List[Dict]:
@@ -72,8 +80,11 @@ def to_df_and_save(parsed_games: List[List[dict]],
     df.rename(columns=lambda x: x.split('.')[-1], inplace=True)
     df[LEAGUE_ID] = league_num
     df = cast_dtypes(df)
+    df.reset_index(inplace=True)
 
-    export_path = os.path.join(export_dir, league_num, "parsed_logs.fe")
+    export_dir = os.path.join(export_dir, league_num)
+    Path(export_dir).mkdir(parents=True, exist_ok=True)
+    export_path = os.path.join(export_dir, "parsed_logs.fe")
     df.to_feather(export_path)
     end_time = time.perf_counter()
     logger.info(f'Took {end_time - start_time} seconds to make the dataframe '
@@ -90,18 +101,18 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("logs_dir", help="The directory of the game logs for "
-                                         "Front Office Football, usually in "
-                                         "'~/Front Office "
-                                         "Football/leaguehtml/'", type=str)
-    parser.add_argument("league_num", help="The 8 character league number or "
-                                           "identifier to parse logs for, "
-                                           "e.g. 'LG000010'", type=str)
+    parser.add_argument("--logs_dir", help="The directory of the game logs for "
+                                           "Front Office Football, usually in "
+                                           "'~/Front Office "
+                                           "Football/leaguehtml/'", type=str)
+    parser.add_argument("--league_num", help="The 8 character league number or "
+                                             "identifier to parse logs for, "
+                                             "e.g. 'LG000010'", type=str)
     parser.add_argument("--max_to_parse", help="Optional: How many logs to "
                                                "parse. If not set, it will "
                                                "parse all logs found in the "
                                                "provided league.", type=int)
-    parser.add_argument("export_dir", help="The directory to export parsed "
-                                           "logs to.", type=str)
+    parser.add_argument("--export_dir", help="The directory to export parsed "
+                                             "logs to.", type=str)
 
     main(parser.parse_args())
