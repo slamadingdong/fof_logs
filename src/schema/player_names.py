@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass
 class PlayerNames:
     # Offensive players. Not every position will have a name since not every
     # position will be on the field for every play.
