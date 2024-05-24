@@ -7,7 +7,11 @@ class FieldPosition:
     # The yardline, between 1 and 50.
     yardline: int
     # Whether the play was in the opponents half
-    opponents_half: bool    
+    opponents_half: bool
+
+
+@dataclass(frozen=True)
+class DownDistance:
     down: int
     distance: int
 
@@ -22,5 +26,6 @@ class Clock:
 class GameContext:
     clock: Clock
     field_pos: FieldPosition
+    down_distance: DownDistance
     # Whether the home team has the ball.
     home_possession: bool
