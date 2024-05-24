@@ -3,7 +3,7 @@ import re
 
 from consts import (QB, RB, FB, TE, SLOT, LT, LG, C, RG, RT,
                     LDE, NT, RDE, WLB, SLB, MLB, WILB, SILB, LCB, RCB, NB, DB,
-                    SS, FS)
+                    SS, FS, PRIMARY, SECONDARY, BALL_CARRIER)
 from name_utils import shorten_name, target_receiver_name
 from regexes import PASS_BLOCKED_PLAYER_REGEX
 from regexes import SACK_PLAYER_REGEX
@@ -95,9 +95,9 @@ def parse_player_names(summary, play_call) -> PlayerNames:
             out.fs_name = _name_from_play_call(def_player)
 
         out.ball_carrier_name = _parse_ball_carrier(play_call)
-        out.primary_receiver_name = _parse_receiver_name(play_call, 'Primary')
+        out.primary_receiver_name = _parse_receiver_name(play_call, PRIMARY)
         out.secondary_receiver_name = _parse_receiver_name(play_call,
-                                                           'Secondary')
+                                                           SECONDARY)
         out.targeted_receiver_name = _parse_targeted_receiver(summary)
     return out
 
@@ -109,7 +109,7 @@ def _name_from_play_call(name_column):
 def _parse_ball_carrier(play_call) -> str:
     for player in play_call[1:]:
         action = player[1]
-        if action == 'Ball Carrier':
+        if action == BALL_CARRIER:
             return ' '.join(player[0].split(' ')[1:])
     return ''
 

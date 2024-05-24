@@ -37,4 +37,20 @@ NT = "NT"
 K = "K"
 P = "P"
 
+# Run directions. These don't include tackle and guard directions since those
+# are already defined above.
+LE = "LE"
+LM = "LM"
+RM = "RM"
+RE = "RE"
 
+
+# Player responsibilities
+PRIMARY = "Primary"
+SECONDARY = "Secondary"
+BALL_CARRIER = "Ball Carrier"
+PROTECT = "Protect"
+BUZZ = "Buzz"
+BLITZ = "Blitz"
+DOUBLE = "Double"
+SPY = "Spy"
