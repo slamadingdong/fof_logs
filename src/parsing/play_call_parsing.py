@@ -3,10 +3,11 @@ import logging
 import re
 from typing import Optional, Any
 
-from consts import LE, LT, LG, LM, RM, RG, RT, RE, BALL_CARRIER, PRIMARY, \
+from parsing.consts import LE, LT, LG, LM, RM, RG, RT, RE, BALL_CARRIER, \
+    PRIMARY, \
     SECONDARY, PROTECT, BUZZ, BLITZ, DOUBLE, SPY
-from regexes import *
-from src.schema.play_call import (DefensivePlay,
+from parsing.regexes import *
+from schema.play_call import (DefensivePlay,
                                   OffensivePlay,
                                   PlayCall,
                                   PlayType)

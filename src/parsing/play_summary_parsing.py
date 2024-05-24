@@ -2,11 +2,10 @@
 import re
 from typing import Tuple, Any
 
-from consts import PROTECT
-from name_utils import target_receiver_name
-from regexes import *
-from src.schema.game_context import DownDistance
-from src.schema.play_outcome import PassingOutcome, RunningOutcome, PlayOutcome
+from parsing.consts import PROTECT
+from parsing.name_utils import target_receiver_name
+from parsing.regexes import *
+from schema.play_outcome import PassingOutcome, RunningOutcome, PlayOutcome
 
 # Defines the yardage for each type of penalty. Not implemented yet.
 _PENALTY_YARDAGE_MAP = {

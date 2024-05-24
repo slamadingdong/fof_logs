@@ -1,7 +1,7 @@
 """Utilities for parsing names."""
 import re
 
-from consts import QB, RB, FB, TE, WR, C, T, G, P, K
+from parsing.consts import QB, RB, FB, TE, WR, C, T, G, P, K
 
 # The possible positions for a targeted receiver.
 _TARGET_POSITIONS = [QB, RB, FB, TE, WR, C, T, G, P, K]

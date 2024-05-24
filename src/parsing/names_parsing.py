@@ -1,13 +1,12 @@
 """Responsible for reading player names from the play log."""
 import re
 
-from consts import (QB, RB, FB, TE, SLOT, LT, LG, C, RG, RT,
-                    LDE, NT, RDE, WLB, SLB, MLB, WILB, SILB, LCB, RCB, NB, DB,
-                    SS, FS, PRIMARY, SECONDARY, BALL_CARRIER)
-from name_utils import shorten_name, target_receiver_name
-from regexes import PASS_BLOCKED_PLAYER_REGEX
-from regexes import SACK_PLAYER_REGEX
-from src.schema.player_names import PlayerNames
+from parsing.consts import (QB, RB, FB, TE, X_SE, Z_FL, SLOT, LT, LG, C, RG, RT,
+                            LDE, NT, RDE, WLB, SLB, MLB, WILB, SILB, LCB, RCB,
+                            NB, DB,  SS, FS, PRIMARY, SECONDARY, BALL_CARRIER)
+from parsing.name_utils import shorten_name, target_receiver_name
+from parsing.regexes import PASS_BLOCKED_PLAYER_REGEX, SACK_PLAYER_REGEX
+from schema.player_names import PlayerNames
 
 
 def parse_player_names(summary, play_call) -> PlayerNames:
@@ -33,9 +32,9 @@ def parse_player_names(summary, play_call) -> PlayerNames:
             out.fb_name = _name_from_play_call(off_player)
         elif off_position == TE and out.te_name == '':
             out.te_name = _name_from_play_call(off_player)
-        elif off_position == X:
+        elif off_position == X_SE:
             out.x_name = _name_from_play_call(off_player)
-        elif off_position == Z:
+        elif off_position == Z_FL:
             out.z_name = _name_from_play_call(off_player)
         elif off_position == SLOT:
             if out.slot_1_name == '':

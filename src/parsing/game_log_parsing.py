@@ -3,11 +3,11 @@ from typing import Any, List, Tuple
 
 from bs4 import element
 
-from game_context_parsing import GameContextParser
-from names_parsing import parse_player_names
-from play_call_parsing import parse_play_call
-from play_summary_parsing import parse_play_outcome
-from src.schema.parsed_play import ParsedPlay
+from parsing.game_context_parsing import GameContextParser
+from parsing.names_parsing import parse_player_names
+from parsing.play_call_parsing import parse_play_call
+from parsing.play_summary_parsing import parse_play_outcome
+from schema.parsed_play import ParsedPlay
 
 
 def parse_full_game(raw_log: Any, participation: Any) -> List[ParsedPlay]:

@@ -2,13 +2,13 @@
 import re
 from typing import Dict, Any
 
-from name_utils import shorten_name
-from regexes import *
-from src.schema.game_context import (GameContext,
+from parsing.name_utils import shorten_name
+from parsing.regexes import *
+from parsing.teams import CITY_TO_ABBREV
+from schema.game_context import (GameContext,
                                      Clock,
                                      FieldPosition,
                                      DownDistance)
-from teams import CITY_TO_ABBREV
 
 
 class GameContextParser(object):

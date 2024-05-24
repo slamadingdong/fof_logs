@@ -56,7 +56,7 @@ class OffensivePlay:
     protect: int = 0
 
 
-@dataclass
-class PlayCall(frozen=True):
+@dataclass(frozen=True)
+class PlayCall:
     offns: OffensivePlay
     dfns: DefensivePlay
