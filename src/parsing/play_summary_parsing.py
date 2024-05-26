@@ -1,11 +1,15 @@
 """Responsible for parsing all data in the play summary text."""
 import re
+import logging
 from typing import Tuple, Any
 
 from parsing.consts import PROTECT
 from parsing.name_utils import target_receiver_name
+from parsing.play_call_parsing import parse_play_type
 from parsing.regexes import *
 from schema.play_outcome import PassingOutcome, RunningOutcome, PlayOutcome
+
+logger = logging.getLogger(__name__)
 
 # Defines the yardage for each type of penalty. Not implemented yet.
 _PENALTY_YARDAGE_MAP = {
@@ -37,8 +41,12 @@ def parse_play_outcome(summary_text: str, play_call: Any) -> PlayOutcome:
     if _should_parse(summary_text):
         # TODO: Parse penalties.
         familiar = ' familiar ' in summary_text
-        if _is_pass_play(summary_text):
-            outcome = _parse_passing_outcome(summary_text, play_call)
+        if parse_play_type(summary_text).type == "pass":
+            try:
+                outcome = _parse_passing_outcome(summary_text, play_call)
+            except ValueError as e:
+                raise ValueError(
+                    repr(e) + f"Regexes failed for: {summary_text}")
         else:
             outcome = _parse_running_outcome(summary_text)
         play_outcome = PlayOutcome(outcome=outcome, familiar=familiar)
@@ -46,7 +54,11 @@ def parse_play_outcome(summary_text: str, play_call: Any) -> PlayOutcome:
 
 
 def _parse_running_outcome(summary_text: str) -> RunningOutcome:
-    yards = int(re.search(YARDAGE_REGEX, summary_text)[0])
+    try:
+        yards = int(re.search(YARDAGE_REGEX, summary_text)[0])
+    except TypeError:
+        logger.warning(f"Couldn't find yardage for: {summary_text}")
+        return RunningOutcome(yards=0)
     return RunningOutcome(yards=int(yards))
 
 
@@ -124,22 +136,6 @@ def _parse_targeted_route(play_call, target_receiver: str) -> Tuple[str, str]:
             # Occurs for 'Protect' responsibility.
             return PROTECT, PROTECT
     return '', ''
-
-
-def _is_pass_play(summary_text: str) -> bool:
-    # Beware: This particular method qualifies a QB scramble as a run play.
-    # The distinction in this module is we compute the OUTCOME rather than the
-    # intended design of the play.
-    if (re.search(SACKED_REGEX, summary_text) or
-            re.search(PASS_COMPLETED_REGEX, summary_text) or
-            re.search(SIMPLE_INCOMPLETION_REGEX, summary_text) or
-            re.search(DROPPED_REGEX, summary_text) or
-            re.search(PASS_BLOCKED_REGEX, summary_text) or
-            re.search(INTERCEPTION_REGEX, summary_text) or
-            re.search(PLAYACTION_REGEX, summary_text) or
-            re.search(HURRIED_REGEX, summary_text)):
-        return True
-    return False
 
 
 def _is_two_pt_conversion(summary_text):

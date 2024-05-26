@@ -8,9 +8,9 @@ from parsing.consts import LE, LT, LG, LM, RM, RG, RT, RE, BALL_CARRIER, \
     SECONDARY, PROTECT, BUZZ, BLITZ, DOUBLE, SPY
 from parsing.regexes import *
 from schema.play_call import (DefensivePlay,
-                                  OffensivePlay,
-                                  PlayCall,
-                                  PlayType)
+                              OffensivePlay,
+                              PlayCall,
+                              PlayType)
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ def _parse_offense(play_call: Any, summary_text: str) -> \
         for direction in _RUN_DIRECTION_MAP.keys():
             if direction in summary_text:
                 run_direction = _RUN_DIRECTION_MAP[direction]
-    play_type = _parse_play_type(summary_text)
+    play_type = parse_play_type(summary_text)
     return OffensivePlay(off_personnel=personnel,
                          off_formation=formation,
                          qb_alignment=qb_alignment,
@@ -137,7 +137,7 @@ def _parse_defense(play_call: Any) -> Optional[DefensivePlay]:
                          buzz=buzz)
 
 
-def _parse_play_type(summary_text: str) -> PlayType:
+def parse_play_type(summary_text: str) -> PlayType:
     if 'Play-Action' in summary_text:
         return PlayType('pass', playaction=True)
     if 'scrambled' in summary_text:

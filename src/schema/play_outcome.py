@@ -30,6 +30,12 @@ class PassingOutcome:
     # Whether the QB scrambled.
     scramble: bool = False
 
+    def __post_init__(self):
+        if sum([self.complete, self.sacked, self.blocked,
+                self.intercepted, self.dropped, self.scramble]) > 1:
+            raise ValueError(f"Multiple incompatible outcomes were true: "
+                             f"{repr(self)}")
+
 
 @dataclass(frozen=True)
 class RunningOutcome:
