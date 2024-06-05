@@ -94,7 +94,7 @@ def to_df_and_save(parsed_games: List[List[dict]],
 
 def main(args):
     """Parse games and save them as a feather file."""
-    leagues = args.leag_num.split(",")
+    leagues = args.league_ids.split(",")
     for league in leagues:
         league_log_dir = os.path.join(args.logs_dir, league)
         parsed = load_and_parse(league_log_dir, args.max_to_parse)

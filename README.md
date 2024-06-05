@@ -13,14 +13,15 @@ First cd to the script directory:
 
 Then run the script:
 
-`python -m parse --logs_dir "C:\Front Office Football Eight\leaguehtml" --league_num "LG000021" --export_dir "D:\SavedLogs"
+`python -m parse --logs_dir "C:\Front Office Football Eight\leaguehtml" 
+--league_ids "LG000021,LG000022" --export_dir "D:\SavedLogs"
 `
 
 * `--logs_dir` is the directory with the FOF 8 logs, usually it looks like the 
 above example.
-* `--league_num` is the 8 character id of the league whose logs youd like to 
-parse.
-* `--export_dir` is a directory youd like to save the parsed data to. It 
+* `--league_ids` is a comma separated list of the 8 character ids of the 
+  leagues whose logs you'd like to parse.
+* `--export_dir` is a directory you'd like to save the parsed data to. It 
   will create this dir for you if it doesn't already exist.
 
 ## Output Data
