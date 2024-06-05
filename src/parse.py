@@ -94,9 +94,11 @@ def to_df_and_save(parsed_games: List[List[dict]],
 
 def main(args):
     """Parse games and save them as a feather file."""
-    league_log_dir = os.path.join(args.logs_dir, args.league_num)
-    parsed = load_and_parse(league_log_dir, args.max_to_parse)
-    to_df_and_save(parsed, args.league_num, args.export_dir)
+    leagues = args.leag_num.split(",")
+    for league in leagues:
+        league_log_dir = os.path.join(args.logs_dir, league)
+        parsed = load_and_parse(league_log_dir, args.max_to_parse)
+        to_df_and_save(parsed, league, args.export_dir)
 
 
 if __name__ == "__main__":
@@ -105,9 +107,10 @@ if __name__ == "__main__":
                                            "Front Office Football, usually in "
                                            "'~/Front Office "
                                            "Football/leaguehtml/'", type=str)
-    parser.add_argument("--league_num", help="The 8 character league number or "
-                                             "identifier to parse logs for, "
-                                             "e.g. 'LG000010'", type=str)
+    parser.add_argument("--league_ids", help="A comma separated list of the 8 character league "
+                                             "numbers or "
+                                             "identifiers to parse logs for, "
+                                             "e.g. 'LG000010,LG000021'.", type=str)
     parser.add_argument("--max_to_parse", help="Optional: How many logs to "
                                                "parse. If not set, it will "
                                                "parse all logs found in the "

@@ -4,7 +4,7 @@ from typing import Any, List, Tuple
 from bs4 import element
 
 from parsing.game_context_parsing import GameContextParser
-from parsing.names_parsing import parse_player_names
+from parsing.names_parsing import NameParser
 from parsing.play_call_parsing import parse_play_call
 from parsing.play_summary_parsing import parse_play_outcome
 from schema.parsed_play import ParsedPlay
@@ -20,11 +20,14 @@ def parse_full_game(raw_log: Any, participation: Any) -> List[ParsedPlay]:
     """
     output = []
     context_parser = GameContextParser(participation)
-    for summary, play_call in _summaries_and_calls(raw_log):
+    summaries_calls = _summaries_and_calls(game_log=raw_log)
+    summaries = [summary for summary, _ in summaries_calls]
+    name_parser = NameParser(participation, summaries)
+    for summary, play_call in summaries_calls:
         if 'Unknown' in summary or play_call is None:
             continue
         outcome = parse_play_outcome(summary, play_call)
-        names = parse_player_names(summary, play_call)
+        names = name_parser.parse_player_names(summary, play_call)
         playcall = parse_play_call(summary, play_call)
         context = context_parser.parse_context(summary, play_call)
         if playcall and context:
