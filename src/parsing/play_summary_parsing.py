@@ -4,7 +4,7 @@ import logging
 from typing import Tuple, Any
 
 from parsing.consts import PROTECT
-from parsing.name_utils import target_receiver_name
+from parsing.name_utils import target_receiver_name, shorten_name
 from parsing.play_call_parsing import parse_play_type
 from parsing.regexes import *
 from schema.play_outcome import PassingOutcome, RunningOutcome, PlayOutcome
@@ -129,7 +129,7 @@ def _parse_targeted_route(play_call, target_receiver: str) -> Tuple[str, str]:
         try:
             values = player_resp[0].split(' ')
             name = ' '.join(values[1:])
-            if name == target_receiver:
+            if name == shorten_name(target_receiver):
                 priority, route = player_resp[1].split(',')
                 return route.strip(), priority
         except ValueError:

@@ -1,14 +1,13 @@
 """Responsible for parsing the GameContext."""
 import re
-from typing import Dict, Any
+from typing import Any
 
-from parsing.name_utils import shorten_name
+from parsing.name_utils import parse_team_rosters, which_team_offense
 from parsing.regexes import *
-from parsing.teams import CITY_TO_ABBREV
 from schema.game_context import (GameContext,
-                                     Clock,
-                                     FieldPosition,
-                                     DownDistance)
+                                 Clock,
+                                 FieldPosition,
+                                 DownDistance)
 
 
 class GameContextParser(object):
@@ -18,15 +17,14 @@ class GameContextParser(object):
     players in the play call to the table of home and away players."""
 
     def __init__(self, participation_tbl: Any):
-        self._players: Dict
-        self._home_team: str
-        self._away_team: str
-        self._init_teams(participation_tbl)
+        home_team, away_team, short_names, _ = parse_team_rosters(participation_tbl)
+        self._players = short_names
+        self._home_team = home_team
+        self._away_team = away_team
 
     def parse_context(self, summ_text: str, play_call: Any) -> GameContext:
         """Parses the summary text and play call table into a GameContext."""
-        home = self._which_team_offense(
-            play_call) == self._home_team
+        home = which_team_offense(play_call, self._players['home'], self._players['away']) == "home"
         return GameContext(clock=_parse_clock(summ_text),
                            field_pos=self._parse_field_pos(summ_text,
                                                            play_call),
@@ -38,7 +36,8 @@ class GameContextParser(object):
         if maybe_field_pos:
             yardline = int(maybe_field_pos[0][3:])
             side = maybe_field_pos[0][:3]
-            offense = self._which_team_offense(play_call)
+            offense = which_team_offense(play_call, self._players['home'], self._players['away'])
+            offense = self._home_team if offense == 'home' else self._away_team
             opponents_half = side != offense
             return FieldPosition(yardline=yardline,
                                  opponents_half=opponents_half)
@@ -47,39 +46,6 @@ class GameContextParser(object):
                                  opponents_half=True)
         raise AssertionError("The field position could not be parsed: " +
                              summ_text)
-
-    def _which_team_offense(self, play_call: Any):
-        home_matches, away_matches = 0, 0
-        for player_row in play_call[1:]:
-            stripped_position = player_row[0].split(' ')[1:]
-            player_name = ' '.join(stripped_position)
-            if player_name in self._players['home']:
-                home_matches += 1
-            if player_name in self._players['away']:
-                away_matches += 1
-            if home_matches > 3 or away_matches > 3:
-                break
-        if home_matches > away_matches:
-            return self._home_team
-        else:
-            return self._away_team
-
-    def _init_teams(self, participation) -> None:
-        away_table, home_table = participation[0], participation[1]
-        away_city, home_city = away_table.th.text, home_table.th.text
-        self._home_team = CITY_TO_ABBREV[home_city]
-        self._away_team = CITY_TO_ABBREV[away_city]
-        self._players = {'home': [], 'away': []}
-        for home_player_row in home_table.find_all('tr'):
-            player = home_player_row.contents[0].text
-            player = player.split(' ')
-            name = shorten_name(' '.join(player[1:]))
-            self._players['home'].append(name)
-        for away_player_row in away_table.find_all('tr'):
-            player = away_player_row.contents[0].text
-            player = player.split(' ')
-            name = shorten_name(' '.join(player[1:]))
-            self._players['away'].append(name)
 
 
 def _parse_clock(summ_text) -> Clock:

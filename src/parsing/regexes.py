@@ -28,7 +28,7 @@ PASS_BLOCKED_PLAYER_REGEX = r'(?<=\. )(.*)(?= blocked the pass\.)'
 INTERCEPTION_REGEX = r'intercepted'
 SACKED_REGEX = r'sacked by'
 HURRIED_REGEX = r'(hurried |hurry |was thrown quickly )'
-QB_REGEX = r"\(\dQ: \d{2}:\d{2}\)(?: Play-Action\.)? ([A-Za-z.'-]+(?: [A-Za-z.'-]+)*) pass"
+QB_REGEX = r"\((?:\dQ|OT): \d{2}:\d{2}\)(?: Play-Action\.)? ([A-Za-z.'-]+(?: [A-Za-z.'-]+)*) pass"
 
 # Only applies to sacks
 SACK_YARDS_LOST_REGEX = r'(?<=a loss of )\d{1,2}'

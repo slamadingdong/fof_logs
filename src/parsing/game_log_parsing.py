@@ -21,8 +21,7 @@ def parse_full_game(raw_log: Any, participation: Any) -> List[ParsedPlay]:
     output = []
     context_parser = GameContextParser(participation)
     summaries_calls = _summaries_and_calls(game_log=raw_log)
-    summaries = [summary for summary, _ in summaries_calls]
-    name_parser = NameParser(participation, summaries)
+    name_parser = NameParser(participation, summaries_calls)
     for summary, play_call in summaries_calls:
         if 'Unknown' in summary or play_call is None:
             continue
